@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
 import { FormErrors } from './FormErrors';
-import { Row, Col } from 'react-bootstrap';
+import { ItemService } from './ItemService';
+import Roster from './Roster';
+import { Row, Col, FieldGroup } from 'react-bootstrap';
 
+
+// Styles objects 
 let navStyle = {
 	'margin': '0% 0%'
 }
 
 let formLabelStyle = {
-	'fontSize' : '22px'
+	'fontSize' : '17px',
+	'padding': '8px',
+	'margin': '8px'
 }
 
+// Component creation
 class Form extends Component {
 	constructor(props){
 		super(props);
@@ -42,8 +49,24 @@ class Form extends Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		this.props.history.push('/db');
+		this.addItemService.sendData(this.state.value);
+		this.props.history.push('/');
 		console.log('Added new entry!');
+		
+		let phone = this.ref.phoneNumber.value;
+		let role = this.ref.roleBool.value;
+
+		if(typeof phone === Number) {
+			console.log(this.state.phone + " is a number");
+		} else {
+			console.log(this.state.phone + " is a string");
+		}
+
+		if(typeof role === Boolean) {
+			console.log(this.state.role + " is a boolean");
+		} else {
+			console.log(this.state.role + ' is a string');
+		}
 	}
 
 	validateField(fieldName, value) {
@@ -101,87 +124,98 @@ class Form extends Component {
 
 	render() {
 		return(
-			<form className="navbar-form" style={ navStyle }>
-				<Row>
-					<Col sm={4}>
-						<div className={`form-group ${this.errorClass(this.state.formErrors.first)}`}>
-		         			<label htmlFor="first" style={ formLabelStyle }>First Name: </label>
-		         				<input type="text" 
-		         					   className="form-control"
-		           					   name="first" 
-		           					   onChange={ this.handleUserInput }/>
-		       			</div>
-		       			<div className={`form-group ${this.errorClass(this.state.formErrors.middle)}`}>
-		         			<label htmlFor="middlename" style={ formLabelStyle }>Middle Initial: </label>
-		         				<input type="text" 
-		         					   className="form-control"
-		           					   name="middle" 
-		           					   onChange={ this.handleUserInput }/>
-		       			</div>
-		       			<div className={`form-group ${this.errorClass(this.state.formErrors.last)}`}>
-		         			<label htmlFor="lastname" style={ formLabelStyle }>Last Name: </label>
-		         				<input type="text" 
-		         					   className="form-control"
-		           					   name="last" 
-		           					   onChange={ this.handleUserInput }/>
-		       			</div>
-		       			</Col>
+			<div>
+				<form className="navbar-form" style={ navStyle }>
+
+					<Row>
+	       				<Col sm={12}>
+	       					    <input
+	       					    	style = { formLabelStyle }
+									id="formControlsFile"
+									type="file"
+									label="File"
+							    />
+	       				</Col>
+	       			</Row>
+
+					<Row>
+						<Col sm={4}>
+							<div className={`form-group ${this.errorClass(this.state.formErrors.first)}`}>
+			         			<label htmlFor="first" style={ formLabelStyle }>First Name: </label>
+			         				<input type="text" 
+			         					   className="form-control"
+			           					   name="first"
+			           					   placeholder="Enter First Name" 
+			           					   onChange={ this.handleUserInput }/>
+			       			</div>
+			       			<div className={`form-group ${this.errorClass(this.state.formErrors.middle)}`}>
+			         			<label htmlFor="middlename" style={ formLabelStyle }>Middle Initial: </label>
+			         				<input type="text" 
+			         					   className="form-control"
+			           					   name="middle"
+			           					   placeholder="Enter Middle Initial"  
+			           					   onChange={ this.handleUserInput }/>
+			       			</div>
+			       			<div className={`form-group ${this.errorClass(this.state.formErrors.last)}`}>
+			         			<label htmlFor="lastname" style={ formLabelStyle }>Last Name: </label>
+			         				<input type="text" 
+			         					   className="form-control"
+			           					   name="last"
+			           					   placeholder="Enter Last Name"  
+			           					   onChange={ this.handleUserInput }/>
+			       			</div>
+			       			</Col>
+
+			       			<Col sm={4}>
+			       			<div className={`form-group ${this.errorClass(this.state.formErrors.email)}`}>
+			         			<label htmlFor="email" style={ formLabelStyle }>Email Address: </label>
+			         				<input type="text" 
+			         					   className="form-control"
+			           					   name="email"
+			           					   placeholder="Enter Email"  
+			           					   onChange={ this.handleUserInput }/>
+			       			</div>
+
+			       			<div className={`form-group ${this.errorClass(this.state.formErrors.phone)}`}>
+			         			<label htmlFor="phone" style={ formLabelStyle }>Phone Number: </label>
+			         				<input type="text"
+			         					   ref = "phoneNumber" 
+			         					   className="form-control"
+			           					   name="phone"
+			           					   placeholder="Enter Phone Number"  
+			           					   onChange={ this.handleUserInput }/>
+			       			</div>
+	       				</Col>
 
 		       			<Col sm={4}>
-		       			<div className={`form-group ${this.errorClass(this.state.formErrors.email)}`}>
-		         			<label htmlFor="email" style={ formLabelStyle }>Email Address: </label>
-		         				<input type="text" 
-		         					   className="form-control"
-		           					   name="email" 
-		           					   onChange={ this.handleUserInput }/>
-		       			</div>
-
-		       			<div className={`form-group ${this.errorClass(this.state.formErrors.phone)}`}>
-		         			<label htmlFor="phone" style={ formLabelStyle }>Phone Number: </label>
-		         				<input type="text" 
-		         					   className="form-control"
-		           					   name="phone" 
-		           					   onChange={ this.handleUserInput }/>
-		       			</div>
-       				</Col>
-
-	       			<Col sm={4}>
-		       			<div className={`form-group radio ${this.errorClass(this.state.formErrors.role)}`}>
-		         			<label htmlFor="role" style={ formLabelStyle }>Role: </label>
-		         				<label>
-			         				<input type="radio" 
+			       			<div className={`form-group ${this.errorClass(this.state.formErrors.role)}`}>
+			         			<label htmlFor="role" style={ formLabelStyle }>Role: </label>
+			         				<input type="text" 
 			         					   className="form-control"
-			           					   name="role" 
-			           					   onChange={ this.handleUserInput } 
-			           					   
-			           					   check={ this.state.role === 'student' }/>
-			           				Student
-		           				</label>
-		           				<label>
-			           				<input type="radio" 
-			         					   className="form-control"
-			           					   name="role" 
-			           					   onChange={ this.handleUserInput }
-			           					   
-			           					   check={ this.state.role === 'admin' }/>
-			           				Admin
-		           				</label>
-		       			</div>
-	       			</Col>
-       			</Row>
+			           					   name="role"
+			           					   placeholder='e.g. "Student", "Admin"' 
+			           					   onChange={ this.handleUserInput } 			   
+			           					   check={ this.state.role === 'student' }/>		
 
-       			<Row>
-	       			<Col sm={12}>
-		       			<button type="submit" 
-		       					className="btn btn-primary" 
-		       					onSubmit = { this.handleSubmit } 
-		       					disabled={!this.state.formValid}> 
-		       						Submit 
-		       					</button>
-	       			</Col>
-       			</Row>
+			       			</div>
+		       			</Col>
+	       			</Row>
 
-			</form>
+	       			<Row>
+		       			<Col sm={12}>
+			       			<button type="submit" 
+			       					className="btn btn-primary" 
+			       					onSubmit = { this.handleSubmit } 
+			       					disabled={!this.state.formValid}> 
+			       						Submit 
+			       					</button>
+		       			</Col>
+	       			</Row>
+
+				</form>
+
+				<Roster />
+			</div>
 		);
 	}
 }
